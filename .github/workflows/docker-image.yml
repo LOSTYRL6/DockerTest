@@ -1,18 +1,16 @@
-name: Docker Image CI
-
+name: Docker Subir al Servidor de dockerhub
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  [workflow_dispatch]
 
 jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+ publish_images:
+  runs-on: ubuntu-latest
+  steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: build image
+      run: docker build ./api/ -t lostyrl7/mi-hello-world:latest
+    - name: push image to docker hub
+      run:
+        docker login -u lostyrl7 -p ${{secrets.DOCKER_SECRET}}
+        docker push lostyrl7/mi-hello-world:latest
